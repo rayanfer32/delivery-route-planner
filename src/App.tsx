@@ -358,19 +358,26 @@ export default function DeliveryApp() {
     return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
   };
 
-  const getFullRouteLink = (routePoints: any[]) => {
+  const getFullRouteLink = (routePoints: IPoint[]) => {
     // Google Maps allows waypoints (limited to ~10-20 depending on browser/OS)
     // Format: origin=...&destination=...&waypoints=...
     if (routePoints.length < 2) return '#';
-
+    console.log("routePoints@@", routePoints)
     const origin = `${routePoints[0].lat},${routePoints[0].lon}`;
     const destination = `${routePoints[routePoints.length - 1].lat},${routePoints[routePoints.length - 1].lon}`;
 
     // Slice middle points, take max 8 to be safe with URL limits
-    const waypoints = routePoints.slice(1, -1).slice(0, 8)
+    const waypoints = routePoints.slice(1, -1)
       .map(p => `${p.lat},${p.lon}`).join('|');
 
-    return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
+    let deeplinkAPI = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
+
+    const waypoints2 = routePoints.slice(1, -1)
+      .map(p => `${p.lat},${p.lon}`).join('/');
+
+    let deeplinkUrl = `https://www.google.com/maps/dir/${origin}/${destination}/${waypoints2}`;
+
+    return deeplinkUrl;
   };
 
   const clusterColors = ['border-blue-500', 'border-red-500', 'border-green-500', 'border-yellow-500', 'border-purple-500'];
